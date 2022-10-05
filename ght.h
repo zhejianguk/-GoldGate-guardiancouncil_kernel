@@ -22,6 +22,22 @@ static inline uint64_t ght_get_status ()
   return get_status;
 }
 
+static inline uint64_t ght_get_satp ()
+{
+  uint64_t get_satp;
+  ROCC_INSTRUCTION_DSS (1, get_satp, 0X00, 0X00, 0x17);
+  return get_satp;
+}
+
+static inline uint64_t ght_get_priv ()
+{
+  uint64_t get_priv;
+  ROCC_INSTRUCTION_DSS (1, get_priv, 0X00, 0X00, 0x18);
+  return get_priv;
+}
+
+
+
 static inline uint64_t ght_get_buffer_status ()
 {
   uint64_t get_buffer_status;

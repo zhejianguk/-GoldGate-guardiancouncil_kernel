@@ -216,7 +216,7 @@ int task_ShadowStack_S (uint64_t core_id) {
 
       // Pull -- a function is returned
       if (((Opcode == 0x67) && (Rd == 0x00)) || // + comprised inst
-          ((Opcode == 0X02) && (Func == 0x00 ) && (Rd != 0x00) && ((RS1 & 0x01) == 0X01))) {
+          ((Opcode == 0X02) && (Func == 0x00 ) && (Rd == 0x01) && ((RS1 & 0x01) == 0X01))) {
         PayloadPull = Payload;
         if (empty(&shadow_payload) == 1) {
           printf("[C%x SS]: ==Empty== Uninteded: %x.                        PC: %x. Inst: %x. \r\n", core_id, PayloadPull, PC, Inst);
@@ -315,7 +315,7 @@ int task_ShadowStack_M_Pre (uint64_t core_id) {
 
       // Pull -- a function is returned
       if (((Opcode == 0x67) && (Rd == 0x00)) || // + comprised inst
-          ((Opcode == 0X02) && (Func == 0x00 ) && (Rd != 0x00) && ((RS1 & 0x01) == 0X01))) {
+          ((Opcode == 0X02) && (Func == 0x00 ) && (Rd == 0x01) && ((RS1 & 0x01) == 0X01))) {
         PayloadPull = Payload;
         if (empty(&shadow_payload) == 1) {
           // Send it to AGG
@@ -412,7 +412,7 @@ void clear_queue(int index)
       }
 
     if (((Opcode_q == 0x67) && (Rd_q == 0x00)) || // + comprised inst
-        ((Opcode_q == 0X02) && (Func_q == 0x00 ) && (Rd_q != 0x00) && ((RS1_q & 0x01) == 0X01))) {
+        ((Opcode_q == 0X02) && (Func_q == 0x00 ) && (Rd_q == 0x01) && ((RS1_q & 0x01) == 0X01))) {
       PayloadPull_q = Payload_q;
       if (empty(&shadow_agg_payload) == 1) {
         printf("[AGG SS]: **Error** unintended pull. Addr: %x. Inst:%x. -- Queue index: %x. \r\n", PayloadPull_q, Header_q, index);
@@ -509,7 +509,7 @@ int task_ShadowStack_M_Agg (uint64_t core_id, uint64_t core_s, uint64_t core_e) 
 
         // Pull -- a function is pulled
          if (((Opcode == 0x67) && (Rd == 0x00)) || // + comprised inst
-             ((Opcode == 0X02) && (Func == 0x00 ) && (Rd != 0x00) && ((RS1 & 0x01) == 0X01))) {
+             ((Opcode == 0X02) && (Func == 0x00 ) && (Rd == 0x01) && ((RS1 & 0x01) == 0X01))) {
           PayloadPull = Payload; 
           if (empty(&shadow_agg_payload) == 1) {
             printf("[AGG SS]: **Error** unintended pull. Addr: %x. Inst:%x. -- Queue index: %x. \r\n", PayloadPull, inst, CurrentTarget);
