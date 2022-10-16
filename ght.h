@@ -36,7 +36,15 @@ static inline uint64_t ght_get_priv ()
   return get_priv;
 }
 
+static inline void ght_set_satp_priv ()
+{
+  ROCC_INSTRUCTION_S (1, 0x01, 0x16);
+}
 
+static inline void ght_unset_satp_priv ()
+{
+  ROCC_INSTRUCTION_S (1, 0x02, 0x16);
+}
 
 static inline uint64_t ght_get_buffer_status ()
 {
