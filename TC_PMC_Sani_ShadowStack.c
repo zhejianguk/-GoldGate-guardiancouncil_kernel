@@ -98,6 +98,7 @@ int main(void)
   lock_acquire(&uart_lock);
   printf("C0: Test is now started: \r\n");
   lock_release(&uart_lock);
+  ght_set_satp_priv();
   ght_set_status (0x01); // ght: start
   //===================== Execution =====================//
   for (int i = 0; i < 170; i++) {
