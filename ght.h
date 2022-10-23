@@ -8,6 +8,27 @@
 #define GHT_FULL 0x02
 #define GHT_EMPTY 0x01
 
+static inline uint64_t debug_mcounter ()
+{
+  uint64_t mcounter;
+  ROCC_INSTRUCTION_D (1, mcounter, 0x19);
+  return mcounter;
+}
+
+static inline uint64_t debug_icounter ()
+{
+  uint64_t icounter;
+  ROCC_INSTRUCTION_D (1, icounter, 0x1a);
+  return icounter;
+}
+
+static inline uint64_t debug_gcounter ()
+{
+  uint64_t icounter;
+  ROCC_INSTRUCTION_D (1, icounter, 0x23);
+  return icounter;
+}
+
 static inline void ght_set_status (uint64_t status)
 {
   asm volatile("fence rw, rw;");

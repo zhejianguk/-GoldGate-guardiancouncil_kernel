@@ -7,6 +7,9 @@
 
 int uart_lock;
 char* shadow;
+uint64_t m_counter;
+uint64_t i_counter;
+uint64_t g_counter;
 
 /* Core_0 thread */
 int main(void)
@@ -92,6 +95,17 @@ int main(void)
 
   ght_unset_satp_priv();
   ght_set_status (0x00);
+
+  m_counter = debug_mcounter();
+  i_counter = debug_icounter();
+  g_counter = debug_gcounter();
+
+  lock_acquire(&uart_lock);
+  printf("Debug, m-counter: %x \r\n", m_counter);
+  printf("Debug, i-counter: %x \r\n", i_counter);
+  printf("Debug, g-counter: %x \r\n", g_counter);
+  lock_release(&uart_lock);
+
   return 0;
 }
 
