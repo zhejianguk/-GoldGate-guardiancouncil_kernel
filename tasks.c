@@ -305,7 +305,6 @@ int task_ShadowStack_M_Pre (uint64_t core_id) {
         if (full(&shadow_payload) == 0) {
           enqueueF(&shadow_header, Inst);
           enqueueF(&shadow_payload, PayloadPush);
-
         } else {
           lock_acquire(&uart_lock);
           printf("[C%x SS]: **Error** shadow stack is full. \r\n", core_id);
@@ -355,6 +354,10 @@ int task_ShadowStack_M_Pre (uint64_t core_id) {
       }
       ghe_agg_push ((0xFFFFFFFF|Header_index), 0x0);
       }
+
+      while ((ghe_sch_status() == 0x01) && (ghe_status() == GHE_EMPTY)) {
+				// Wait the core to be waked up
+			}
     }
 
 
@@ -383,10 +386,10 @@ dequeue  queues_payload[NUM_CORES];
 void clear_queue(int index)
 {
   while (empty(&queues_header[index]) == 0) {
-    uint64_t Header_q = dequeueF(&queues_header[index]);
+    uint64_t Header_q = dequeueR(&queues_header[index]);
     Header_q = Header_q & 0xFFFFFFFF;
     uint64_t inst = Header_q & 0xFFFFFFFF;
-    uint64_t Payload_q = dequeueF(&queues_payload[index]);
+    uint64_t Payload_q = dequeueR(&queues_payload[index]);
     uint64_t Opcode_q = Header_q & 0x7F;
     uint64_t Func_q = (Header_q & 0x7000) >> 12;
     uint64_t Rd_q = (Header_q & 0xF80) >> 7;
@@ -554,8 +557,14 @@ int task_ShadowStack_M_Agg (uint64_t core_id, uint64_t core_s, uint64_t core_e) 
           clear_queue(CurrentTarget);
         }          
       } else {
-        enqueueF(&queues_header[from], Header);
-        enqueueF(&queues_payload[from], Payload);
+        if (full(&queues_header[from]) == 0) {
+          enqueueF(&queues_header[from], Header);
+					enqueueF(&queues_payload[from], Payload);
+        } else {
+          lock_acquire(&uart_lock);
+    			printf("[AGG SS]: **Error** Asynchronous Full!! from %x, Header = %x, Payload = %x. \r\n", from, Header, Payload);
+          lock_release(&uart_lock);
+        }
       }
     }
 
