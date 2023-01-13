@@ -91,7 +91,7 @@ static inline uint64_t ghe_agg_status ()
 {
   uint64_t status;
   ROCC_INSTRUCTION_D (1, status, 0x10);
-  return status; 
+  return status;
   // 0b01: empty; 
   // 0b10: full;
   // 0b00: data buffered;
@@ -112,4 +112,17 @@ static inline uint64_t ghe_sch_status ()
   // 0b10: full;
   // 0b00: data buffered;
   // 0b11: error
+}
+
+static inline uint64_t ghe_initailised (uint64_t if_initailised)
+{
+  ROCC_INSTRUCTION_S (1, if_initailised, 0x24);
+}
+
+static inline uint64_t ghe_get_bufferdepth ()
+{
+  uint64_t depth;
+  ROCC_INSTRUCTION_DS (1, depth, 1, 0x24);
+  // ROCC_INSTRUCTION_D (1, get_status, 0x25);
+  return depth;
 }

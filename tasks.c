@@ -72,28 +72,46 @@ uint64_t task_synthetic_malloc (uint64_t base)
 
 
 int task_PerfCounter(uint64_t core_id) {
-  uint64_t Func_Opcode = 0x0;
   uint64_t perfc = 0;
-  uint64_t Payload = 0x0;
 
   //================== Initialisation ==================//
-  while (ghe_checkght_status() == 0x00){
-  };
-
+  ghe_initailised(1);
+  
   //===================== Execution =====================// 
   while (ghe_checkght_status() != 0x02){
-    while (ghe_status() != GHE_EMPTY){
-      ROCC_INSTRUCTION_D (1, Payload, 0x0D);
-      perfc = perfc + 1;
+    uint32_t buffer_depth = ghe_get_bufferdepth();
+    while (buffer_depth > 7) {
+      ROCC_INSTRUCTION (1, 0x0D);
+      ROCC_INSTRUCTION (1, 0x0D);
+      ROCC_INSTRUCTION (1, 0x0D);
+      ROCC_INSTRUCTION (1, 0x0D);
+      ROCC_INSTRUCTION (1, 0x0D);
+      ROCC_INSTRUCTION (1, 0x0D);
+      ROCC_INSTRUCTION (1, 0x0D);
+      ROCC_INSTRUCTION (1, 0x0D);
+      perfc = perfc + 8;
+      buffer_depth = ghe_get_bufferdepth();
     }
 
-
-    if ((ghe_status() == GHE_EMPTY) && (ghe_checkght_status() == 0x00)) {
-      ghe_complete();
-      while((ghe_checkght_status() == 0x00)) {
-        // Wait big core to re-start
+    if (buffer_depth > 0) {
+      switch (buffer_depth){
+        case 7: 
+          ROCC_INSTRUCTION (1, 0x0D);
+        case 6: 
+          ROCC_INSTRUCTION (1, 0x0D);
+        case 5: 
+          ROCC_INSTRUCTION (1, 0x0D);
+        case 4: 
+          ROCC_INSTRUCTION (1, 0x0D);
+        case 3: 
+          ROCC_INSTRUCTION (1, 0x0D);
+        case 2: 
+          ROCC_INSTRUCTION (1, 0x0D);
+        case 1: 
+          ROCC_INSTRUCTION (1, 0x0D);
+          perfc = perfc + buffer_depth;
       }
-      ghe_go();
+      buffer_depth = 0;
     }
   }
 
@@ -102,7 +120,8 @@ int task_PerfCounter(uint64_t core_id) {
   printf("[C%x PMC]: Completed, PMC = %x! \r\n", core_id, perfc);
   lock_release(&uart_lock);
   ghe_release();
-  
+
+  ghe_initailised(0);  
   return 0;
 }
 

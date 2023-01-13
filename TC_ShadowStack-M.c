@@ -46,19 +46,19 @@ int main(void)
   // Data path: ALU + JALR
   ght_cfg_filter(0x03, 0x00, 0x67, 0x01);
 
-  // Insepct Compressed JALR 
+  // Insepct Special RET 
   // inst_index: 0x03
   // Func: 0x00
   // Opcode: 0x02
   // Data path: ALU + JALR
-  ght_cfg_filter(0x03, 0x00, 0x02, 0x01);
+  ght_cfg_filter_rvc(0x03, 0x00, 0x02, 0x01);
   
-  // Insepct Compressed JAL
+  // Insepct Special JALR 
   // inst_index: 0x03
   // Func: 0x01
   // Opcode: 0x02
   // Data path: ALU + JALR
-  ght_cfg_filter(0x03, 0x01, 0x02, 0x01);
+  ght_cfg_filter_rvc(0x03, 0x01, 0x02, 0x01);
 
   ghm_cfg_agg(0x01);
   

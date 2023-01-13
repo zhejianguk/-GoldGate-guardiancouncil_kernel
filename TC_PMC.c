@@ -15,6 +15,7 @@ uint64_t g_counter;
 int main(void)
 {
   //================== Initialisation ==================//
+  ght_set_numberofcheckers(2);
   // Insepct load operations 
   // index: 0x01 
   // Func: 0x00; 0x01; 0x02; 0x03; 0x04; 0x05
@@ -34,6 +35,10 @@ int main(void)
 
 
   ght_cfg_mapper (0x01, 0b0011);
+
+  while (ght_get_initialisation() == 0){
+
+  }
 
 
   lock_acquire(&uart_lock);
@@ -105,6 +110,10 @@ int main(void)
   printf("Debug, i-counter: %x \r\n", i_counter);
   printf("Debug, g-counter: %x \r\n", g_counter);
   lock_release(&uart_lock);
+
+  while (ght_get_initialisation() == 1){
+    
+  }
 
   return 0;
 }
