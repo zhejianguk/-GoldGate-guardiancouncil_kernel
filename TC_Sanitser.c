@@ -20,6 +20,8 @@ int main(void)
   int sum_temp = 0;
 
   //================== Initialisation ==================//
+  ght_set_numberofcheckers(3);
+  
   // shadow memory
   shadow = shadow_malloc(32*1024*1024*sizeof(char));
   if(shadow == NULL) {
@@ -59,10 +61,6 @@ int main(void)
   ght_cfg_mapper (0x02, 0b0110);
 
 
-
-  
-
-
   lock_acquire(&uart_lock);
   printf("C0: Test is now started: \r\n");
   lock_release(&uart_lock);
@@ -100,8 +98,6 @@ int main(void)
   }
 
   free(ptr);
-
-
 
   //=================== Post execution ===================//
   ght_set_status (0x02); // ght: stop

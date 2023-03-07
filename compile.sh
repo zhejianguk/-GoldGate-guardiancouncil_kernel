@@ -37,13 +37,14 @@ if [[ $source_file != $null ]]; then
 	fi
 
 	riscv64-unknown-elf-gcc -fno-common -fno-builtin-printf -specs=htif_nano.specs -march=rv64imafd -O3 -c $source_file.c tasks.c deque.c
-	
+	riscv64-unknown-elf-gcc -fno-common -fno-builtin-printf -specs=htif_nano.specs -march=rv64imafd -O3 -c tasks_gc.c
+
 	if [[ $malloc_flag != $null ]]; then
-		riscv64-unknown-elf-gcc -fno-common -fno-builtin-printf -specs=htif_nano.specs -march=rv64imafd -static -Wl,--allow-multiple-definition -DUSE_PUBLIC_MALLOC_WRAPPERS ./malloc.o $source_file.o ./tasks.o ./deque.o -O3 -o $source_file.riscv
+		riscv64-unknown-elf-gcc -fno-common -fno-builtin-printf -specs=htif_nano.specs -march=rv64imafd -static -Wl,--allow-multiple-definition -DUSE_PUBLIC_MALLOC_WRAPPERS ./malloc.o $source_file.o ./tasks.o ./tasks_gc.o ./deque.o -O3 -o $source_file.riscv
 	fi
 
 	if [[ $malloc_flag == $null ]]; then
-		riscv64-unknown-elf-gcc -fno-common -fno-builtin-printf -specs=htif_nano.specs -march=rv64imafd $source_file.o ./tasks.o ./deque.o -O3 -o $source_file.riscv
+		riscv64-unknown-elf-gcc -fno-common -fno-builtin-printf -specs=htif_nano.specs -march=rv64imafd $source_file.o ./tasks.o ./tasks_gc.o ./deque.o -O3 -o $source_file.riscv
 	fi
 	
 	echo ">>Jessica:  Generating $source_file.riscv ";

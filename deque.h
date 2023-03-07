@@ -1,7 +1,7 @@
 #ifndef DEQUE_H
 #define DEQUE_H
 
-#define MAX 64
+#define MAX 1024
 
 
 

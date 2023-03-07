@@ -2,7 +2,10 @@
 
 #define TRUE 0x01
 #define FALSE 0x00
-#define NUM_CORES 8
+#define NUM_CORES 4
+#define GC_DEBUG 1
+
+
 // #define DEPTH_GHE 256
 
 #define GHT_FULL 0x02
@@ -29,11 +32,45 @@ static inline uint64_t debug_gcounter ()
   return icounter;
 }
 
-static inline void ght_set_status (uint64_t status)
+/*
+static inline void ght_set_status_00 ()
 {
-  asm volatile("fence rw, rw;");
-  ROCC_INSTRUCTION_SS (1, status, 0X01, 0x06);
-  asm volatile("fence rw, rw;");
+  ROCC_INSTRUCTION (1, 0x30);
+}
+
+static inline void ght_set_status_01 ()
+{
+  ROCC_INSTRUCTION (1, 0x31);
+}
+
+static inline void ght_set_status_02 ()
+{
+  ROCC_INSTRUCTION (1, 0x32);
+}
+*/
+
+static inline void ght_set_status (uint64_t index)
+{
+  if (index == 0){
+    ROCC_INSTRUCTION (1, 0x30);
+  }
+
+  if (index == 1){
+    ROCC_INSTRUCTION (1, 0x31);
+  }
+
+  if (index == 2){
+    ROCC_INSTRUCTION (1, 0x32);
+  }
+
+  if (index == 3){
+    ROCC_INSTRUCTION (1, 0x33);
+  }
+
+  if (index == 4){
+    ROCC_INSTRUCTION (1, 0x34);
+  }
+
 }
 
 static inline uint64_t ght_get_status ()

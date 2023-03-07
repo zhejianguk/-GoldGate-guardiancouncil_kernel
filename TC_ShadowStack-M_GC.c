@@ -6,6 +6,7 @@
 #include "ghe.h"
 #include "tasks.h"
 #include "malloc.h"
+#include "tasks_gc.h"
 
 int uart_lock;
 char* shadow;
@@ -60,11 +61,12 @@ int main(void)
   // Data path: ALU + JALR
   ght_cfg_filter_rvc(0x03, 0x01, 0x02, 0x01);
 
-  ghm_cfg_agg(0x01);
+  ghm_cfg_agg(0x03);
   
 
-  // se: 0x03, end_id: 0x03, scheduling: fp, start_id: 0x02
-  ght_cfg_se (0x03, 0x03, 0x03, 0x02);
+  // se: 0x03, end_id: 0x02, scheduling: fp, start_id: 0x01
+  ght_cfg_se (0x03, 0x02, 0x03, 0x01);
+  ght_cfg_se (0x03, NUM_CORES-2, 0x0f, 0x01); // Reset SE 0x03
 
   // inst_index: 0x03 se: 0x03
   ght_cfg_mapper (0x03, 0b1000);
@@ -93,7 +95,9 @@ int main(void)
 
   
 
-
+  lock_acquire(&uart_lock);
+  printf("Workloads are done!");
+  lock_release(&uart_lock);
 
 
 
@@ -121,33 +125,16 @@ int __main(void)
   
   switch (Hart_id){
       case 0x01:
-        task_ShadowStack_M_Agg(Hart_id, 0x2, 0x3);
+        thread_shadowstack_gc(Hart_id);
       break;
 
       case 0x02:
-        task_ShadowStack_M_Pre(Hart_id);
+        thread_shadowstack_gc(Hart_id);
       break;
 
       case 0x03:
-        task_ShadowStack_M_Pre(Hart_id);
+        thread_shadowstack_agg_gc(Hart_id);
       break;
-
-      case 0x04:
-        task_ShadowStack_M_Pre(Hart_id);
-      break;
-
-      case 0x05:
-        task_ShadowStack_M_Pre(Hart_id);
-      break;
-
-      case 0x06:
-        task_ShadowStack_M_Pre(Hart_id);
-      break;
-
-      case 0x07:
-        task_ShadowStack_M_Pre(Hart_id);
-      break;
-
 
       default:
       break;

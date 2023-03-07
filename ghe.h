@@ -63,28 +63,25 @@ static inline uint64_t ghe_checkght_status ()
 }
 
 
-static inline uint64_t ghe_complete ()
+static inline void ghe_complete ()
 {
-  uint64_t get_status = 0;
-  uint64_t set_status = 0x01;
-  ROCC_INSTRUCTION_DS (1, get_status, set_status, 0x01);
-  return get_status; 
+  // uint64_t get_status = 0;
+  // uint64_t set_status = 0x01;
+  ROCC_INSTRUCTION (1, 0x41);
 }
 
-static inline uint64_t ghe_release ()
+static inline void ghe_release ()
 {
-  uint64_t get_status = 0;
-  uint64_t set_status = 0xFF;
-  ROCC_INSTRUCTION_DS (1, get_status, set_status, 0x01);
-  return get_status; 
+  // uint64_t get_status = 0;
+  // uint64_t set_status = 0xFF;
+  ROCC_INSTRUCTION (1, 0x43);
 }
 
-static inline uint64_t ghe_go ()
+static inline void ghe_go ()
 {
-  uint64_t get_status = 0;
-  uint64_t set_status = 0;
-  ROCC_INSTRUCTION_DS (1, get_status, set_status, 0x01);
-  return get_status; 
+  // uint64_t get_status = 0;
+  // uint64_t set_status = 0;
+  ROCC_INSTRUCTION (1, 0x40);
 }
 
 static inline uint64_t ghe_agg_status ()
@@ -114,9 +111,15 @@ static inline uint64_t ghe_sch_status ()
   // 0b11: error
 }
 
-static inline uint64_t ghe_initailised (uint64_t if_initailised)
+static inline void ghe_initailised (uint64_t if_initailised)
 {
-  ROCC_INSTRUCTION_S (1, if_initailised, 0x24);
+  if (if_initailised == 0){
+    ROCC_INSTRUCTION (1, 0x50);
+  }
+
+  if (if_initailised == 1){
+    ROCC_INSTRUCTION (1, 0x51);
+  }
 }
 
 static inline uint64_t ghe_get_bufferdepth ()

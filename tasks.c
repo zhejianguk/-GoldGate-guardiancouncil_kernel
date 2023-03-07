@@ -219,11 +219,13 @@ int task_ShadowStack_S (uint64_t core_id) {
       RS1 = (Header & 0xF8000) >> 15;
       PC = Header >> 32;
       Inst = Header & 0xFFFFFFFF;
+
+
+      uint64_t type = Payload & 0x03;
       
       // Push -- a function is called
-      if ((((Opcode == 0x6F) || (Opcode == 0x67)) && (Rd == 0x01)) || // + comprised inst
-           ((Opcode == 0x02) && (Func == 0x01) && (Rd != 0x00) && ((RS1 & 0x01) == 0X01))) {
-        PayloadPush = Payload;
+      if (type == 1) {
+        PayloadPush = Payload >> 2;
         if (full(&shadow_payload) == 0) {
           enqueueF(&shadow_header, Header);
           enqueueF(&shadow_payload, PayloadPush);
@@ -234,13 +236,12 @@ int task_ShadowStack_S (uint64_t core_id) {
       }
 
       // Pull -- a function is returned
-      if (((Opcode == 0x67) && (Rd == 0x00)) || // + comprised inst
-          ((Opcode == 0X02) && (Func == 0x00 ) && (Rd == 0x01) && ((RS1 & 0x01) == 0X01))) {
-        PayloadPull = Payload;
+      if (type == 2) {
+        PayloadPull = Payload >> 2;
         if (empty(&shadow_payload) == 1) {
           printf("[C%x SS]: ==Empty== Uninteded: %x.                        PC: %x. Inst: %x. \r\n", core_id, PayloadPull, PC, Inst);
         } else {
-          u_int64_t comp = dequeueF(&shadow_payload);
+          uint64_t comp = dequeueF(&shadow_payload);
           dequeueF(&shadow_header);
           
           if (comp != PayloadPull){
@@ -320,7 +321,7 @@ int task_ShadowStack_M_Pre (uint64_t core_id) {
       // Push -- a function is called
       if ((((Opcode == 0x6F) || (Opcode == 0x67)) && (Rd == 0x01)) || // + comprised inst
           ((Opcode == 0x02) && (Func == 0x01) && (Rd != 0x00) && ((RS1 & 0x01) == 0X01))) {
-        PayloadPush = Payload;
+        PayloadPush = Payload >> 2;
         if (full(&shadow_payload) == 0) {
           enqueueF(&shadow_header, Inst);
           enqueueF(&shadow_payload, PayloadPush);
@@ -334,14 +335,14 @@ int task_ShadowStack_M_Pre (uint64_t core_id) {
       // Pull -- a function is returned
       if (((Opcode == 0x67) && (Rd == 0x00)) || // + comprised inst
           ((Opcode == 0X02) && (Func == 0x00 ) && (Rd == 0x01) && ((RS1 & 0x01) == 0X01))) {
-        PayloadPull = Payload;
+        PayloadPull = Payload >> 2;
         if (empty(&shadow_payload) == 1) {
           // Send it to AGG
           while (ghe_agg_status() == GHE_FULL) {
           }
           S_Header = Inst | Header_index;
           S_Payload = Payload;
-          ghe_agg_push (S_Header, S_Payload);
+          ghe_agg_push (S_Header, PayloadPull);
         } else {
           u_int64_t comp = dequeueF(&shadow_payload);
           dequeueF(&shadow_header);
