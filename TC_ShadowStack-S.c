@@ -102,6 +102,16 @@ int main(void)
   lock_acquire(&uart_lock);
   printf("All tests are done! Status: %x, sum = %x \r\n", status, sum);
   lock_release(&uart_lock);
+
+  printf("bp_debug_checker: %lx \r\n", debug_bp_checker());
+  printf("debug_bp_cdc: %lx \r\n", debug_bp_cdc());
+  printf("debug_bp_filter: %lx \r\n", debug_bp_filter());
+
+  debug_bp_reset();
+
+  printf("bp_debug_checker: %lx \r\n", debug_bp_checker());
+  printf("debug_bp_cdc: %lx \r\n", debug_bp_cdc());
+  printf("debug_bp_filter: %lx \r\n", debug_bp_filter());
   return 0;
 }
 

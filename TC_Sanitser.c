@@ -59,21 +59,24 @@ int main(void)
 
   ght_cfg_mapper (0x01, 0b0110);
   ght_cfg_mapper (0x02, 0b0110);
-
-
+  
+  
+  ght_debug_filter_width(0x02);
+  
   lock_acquire(&uart_lock);
   printf("C0: Test is now started: \r\n");
   lock_release(&uart_lock);
   ght_set_satp_priv();
   ght_set_status (0x01); // start monitoring
+  
 
 
   //===================== Execution =====================//
-  for (int i = 0; i < 170; i++) {
+  for (int i = 0; i < 7; i++) {
     task_synthetic();
   }
 
-  for (int i = 0; i < 17; i++ ){
+  for (int i = 0; i < 7; i++ ){
     sum_temp = task_synthetic_malloc(i);
     sum = sum + sum_temp;
     printf("");
@@ -109,6 +112,27 @@ int main(void)
   lock_acquire(&uart_lock);
   printf("All tests are done! Status: %x; Sum: %x -- addr: %x \r\n", status, sum, &sum);
   lock_release(&uart_lock);
+
+  uint64_t bp_checker;
+  uint64_t bp_cdc;
+  uint64_t bp_filter;
+
+  bp_checker = debug_bp_checker();
+  bp_cdc = debug_bp_cdc();
+  bp_filter = debug_bp_filter();
+
+  printf("bp_debug_checker: %lx", bp_checker);
+  printf("debug_bp_cdc: %lx", bp_cdc);
+  printf("debug_bp_filter: %lx", bp_filter);
+
+  debug_bp_reset();
+
+  bp_checker = debug_bp_checker();
+  bp_cdc = debug_bp_cdc();
+  bp_filter = debug_bp_filter();
+  printf("bp_debug_checker: %lx", bp_checker);
+  printf("debug_bp_cdc: %lx", bp_cdc);
+  printf("debug_bp_filter: %lx", bp_filter);
   
   // shadow memory
   shadow_free(shadow);
