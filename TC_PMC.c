@@ -15,7 +15,7 @@ uint64_t g_counter;
 int main(void)
 {
   //================== Initialisation ==================//
-  ght_set_numberofcheckers(2);
+  ght_set_numberofcheckers(4);
   // Insepct load operations 
   // index: 0x01 
   // Func: 0x00; 0x01; 0x02; 0x03; 0x04; 0x05
@@ -33,8 +33,8 @@ int main(void)
   // se: 01, end_id: 0x03, scheduling: rr, start_id: 0x03
   ght_cfg_se (0x01, 0x03, 0x01, 0x03);
 
-
-  ght_cfg_mapper (0x01, 0b0011);
+  
+  ght_cfg_mapper (0b01, 0b11);
 
   while (ght_get_initialisation() == 0){
 

@@ -19,6 +19,7 @@ int main(void)
   int sum = 0;
 
   //================== Initialisation ==================//
+   ght_set_numberofcheckers(3);
   // shadow memory
   shadow = shadow_malloc(32*1024*1024*sizeof(char));
   if(shadow == NULL) {
@@ -136,6 +137,9 @@ int __main(void)
         thread_shadowstack_agg_gc(Hart_id);
       break;
 
+      case 0x04:
+        thread_shadowstack_gc(Hart_id);
+      break;
       default:
       break;
   }

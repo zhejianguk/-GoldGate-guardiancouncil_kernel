@@ -38,11 +38,9 @@ int thread_shadowstack_gc (uint64_t core_id) {
 					}
 				} else {
 					// Send it to AGG
-					/*
 					while (ghe_agg_status() == GHE_FULL) {
 					}
 					ghe_agg_push (hart_id, Payload);
-					*/
 				}
 			}
 		}
@@ -52,11 +50,9 @@ int thread_shadowstack_gc (uint64_t core_id) {
 			// Send unpaired pushes
 			while ((empty(&shadow) == 0)) {
 				S_Payload = dequeueR(&shadow);
-				/*
 				while (ghe_agg_status() == GHE_FULL) {
 				}
 				ghe_agg_push (hart_id, S_Payload);
-				*/
 			}
 		
 			// Send termination flag
@@ -67,7 +63,7 @@ int thread_shadowstack_gc (uint64_t core_id) {
 			while ((ghe_sch_status() == 0x01) && (ghe_status() == GHE_EMPTY)) {
 				// Wait the core to be waked up
 			}
-      	}
+    }
 				
 		if ((ghe_checkght_status() == 0x00) && (ghe_status() == GHE_EMPTY)) {
       ghe_complete();

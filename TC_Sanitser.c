@@ -61,7 +61,7 @@ int main(void)
   ght_cfg_mapper (0x02, 0b0110);
   
   
-  ght_debug_filter_width(0x02);
+  // ght_debug_filter_width(0x02);
   
   lock_acquire(&uart_lock);
   printf("C0: Test is now started: \r\n");
@@ -72,18 +72,23 @@ int main(void)
 
 
   //===================== Execution =====================//
+  
+  /*
   for (int i = 0; i < 7; i++) {
     task_synthetic();
   }
+  */
+
+
 
   for (int i = 0; i < 7; i++ ){
     sum_temp = task_synthetic_malloc(i);
     sum = sum + sum_temp;
     printf("");
   }
+ 
+
   
-
-
   ptr = (int*) malloc(ptr_size * sizeof(int));
   printf("ptr = %x\r\n", ptr);
 
@@ -98,6 +103,9 @@ int main(void)
     // Testing detecions of buffer overflow.
     *(ptr + i) = i;
     sum = sum + *(ptr+i);
+    if (i >= ptr_size){
+      printf("A\r\n");
+    }
   }
 
   free(ptr);
@@ -130,9 +138,9 @@ int main(void)
   bp_checker = debug_bp_checker();
   bp_cdc = debug_bp_cdc();
   bp_filter = debug_bp_filter();
-  printf("bp_debug_checker: %lx", bp_checker);
-  printf("debug_bp_cdc: %lx", bp_cdc);
-  printf("debug_bp_filter: %lx", bp_filter);
+  printf("bp_debug_checker: %lx \r\n", bp_checker);
+  printf("debug_bp_cdc: %lx \r\n", bp_cdc);
+  printf("debug_bp_filter: %lx \r\n", bp_filter);
   
   // shadow memory
   shadow_free(shadow);

@@ -161,7 +161,7 @@ static inline void ght_cfg_se (uint64_t se_id, uint64_t end_id, uint64_t policy,
 static inline void ght_cfg_mapper (uint64_t inst_type, uint64_t ses_receiving_inst)
 {
   uint64_t set_mapper;
-  set_mapper = ((inst_type & 0x1f)<<4) | ((ses_receiving_inst & 0xFFFF)<<16) | 0x03;
+  set_mapper = ((inst_type & 0xff)<<4) | ((ses_receiving_inst & 0xFFFF)<<16) | 0x03;
   ROCC_INSTRUCTION_SS (1, set_mapper, 0X02, 0x06);
 }
 
