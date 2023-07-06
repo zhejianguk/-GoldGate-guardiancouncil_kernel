@@ -19,7 +19,10 @@ int main(void)
   int sum = 0;
 
   //================== Initialisation ==================//
-   ght_set_numberofcheckers(3);
+  ght_set_numberofcheckers(3);
+  ROCC_INSTRUCTION_S (1, 0x02, 0x01); // Enabling FI
+  ROCC_INSTRUCTION (1, 0x67); // Reset FI
+
   // shadow memory
   shadow = shadow_malloc(32*1024*1024*sizeof(char));
   if(shadow == NULL) {
@@ -80,14 +83,14 @@ int main(void)
   ght_set_status (0x01); // ght: start
 
   //===================== Execution =====================//
-  for (int i = 0; i < 170; i++) {
+  for (int i = 0; i < 70; i++) {
     task_synthetic();
     printf("");
     printf("");
     printf("");
   }
 
-  for (int i = 0; i < 170; i++ ){
+  for (int i = 0; i < 70; i++ ){
     sum_temp = task_synthetic_malloc(i);
     task_synthetic();
     sum = sum + sum_temp;
@@ -97,7 +100,7 @@ int main(void)
   
 
   lock_acquire(&uart_lock);
-  printf("Workloads are done!");
+  printf("Workloads are done! \r\n");
   lock_release(&uart_lock);
 
 
@@ -112,7 +115,13 @@ int main(void)
     ght_set_status (0x02);
   }
 
+
   lock_acquire(&uart_lock);
+  for (int j = 0; j < 0x40; j++) {
+    uint64_t latency = ght_readFIU(j);
+    printf("Detection latency for %x is %d cycles \r\n",j,  latency);
+  }
+
   printf("All tests are done! Status: %x, sum = %x \r\n", status, sum);
   lock_release(&uart_lock);
   return 0;

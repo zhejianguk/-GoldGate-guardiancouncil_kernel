@@ -16,6 +16,9 @@ int main(void)
 {
   //================== Initialisation ==================//
   ght_set_numberofcheckers(4);
+  ROCC_INSTRUCTION_S (1, 0x02, 0x01); // Enabling FI
+  ROCC_INSTRUCTION (1, 0x67); // Reset FI
+
   // Insepct load operations 
   // index: 0x01 
   // Func: 0x00; 0x01; 0x02; 0x03; 0x04; 0x05
@@ -109,7 +112,15 @@ int main(void)
   printf("Debug, m-counter: %x \r\n", m_counter);
   printf("Debug, i-counter: %x \r\n", i_counter);
   printf("Debug, g-counter: %x \r\n", g_counter);
+
+  for (int j = 0; j < 0x40; j++) {
+    uint64_t latency = ght_readFIU(j);
+    printf("Detection latency for %x is %d cycles \r\n",j, latency);
+  }
   lock_release(&uart_lock);
+
+
+
 
   while (ght_get_initialisation() == 1){
     

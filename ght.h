@@ -197,3 +197,13 @@ static inline void ght_set_numberofcheckers (uint64_t num)
 {
   ROCC_INSTRUCTION_S (1, num, 0x1c);
 }
+
+
+static inline uint64_t ght_readFIU (uint64_t sel)
+{
+  uint64_t latency;
+
+  ROCC_INSTRUCTION_DS (1, latency, sel, 0x68);
+
+  return latency;
+}

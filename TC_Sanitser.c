@@ -21,7 +21,9 @@ int main(void)
 
   //================== Initialisation ==================//
   ght_set_numberofcheckers(3);
-  
+  ROCC_INSTRUCTION_S (1, 0x02, 0x01); // Enabling FI
+  ROCC_INSTRUCTION (1, 0x67); // Reset FI
+
   // shadow memory
   shadow = shadow_malloc(32*1024*1024*sizeof(char));
   if(shadow == NULL) {
@@ -142,6 +144,10 @@ int main(void)
   printf("debug_bp_cdc: %lx \r\n", bp_cdc);
   printf("debug_bp_filter: %lx \r\n", bp_filter);
   
+  for (int j = 0; j < 0x40; j++) {
+    uint64_t latency = ght_readFIU(j);
+    printf("Detection latency for %x is %d cycles \r\n",j,  latency);
+  }
   // shadow memory
   shadow_free(shadow);
   return 0;
